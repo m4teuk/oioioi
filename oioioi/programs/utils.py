@@ -90,11 +90,7 @@ def compute_score_lowered_reason(test_reports, group_report, max_listed=3):
     if score is None or max_score is None or score >= max_score:
         return None
 
-    failing = [
-        t.test_name
-        for t in test_reports
-        if t.score is not None and t.max_score is not None and t.score < t.max_score
-    ]
+    failing = [t.test_name for t in test_reports if t.score is not None and t.max_score is not None and t.score < t.max_score]
 
     parts = []
     if failing:
@@ -105,16 +101,10 @@ def compute_score_lowered_reason(test_reports, group_report, max_listed=3):
         elif remaining == 0:
             parts.append(gettext("Score lowered due to tests: %(names)s.") % {"names": ", ".join(listed)})
         else:
-            parts.append(
-                gettext("Score lowered due to tests: %(names)s and %(count)d more.")
-                % {"names": ", ".join(listed), "count": remaining}
-            )
+            parts.append(gettext("Score lowered due to tests: %(names)s and %(count)d more.") % {"names": ", ".join(listed), "count": remaining})
 
     if group_report.score_affected_by_dependency and group_report.dependency_prereqs:
-        parts.append(
-            gettext("Score reduced due to results in prerequisite subtask(s): %(prereqs)s")
-            % {"prereqs": group_report.dependency_prereqs}
-        )
+        parts.append(gettext("Score reduced due to results in prerequisite subtask(s): %(prereqs)s") % {"prereqs": group_report.dependency_prereqs})
 
     if not parts:
         return None

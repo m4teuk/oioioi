@@ -1168,9 +1168,7 @@ class TestComputeScoreLoweredReason(TestCase):
     def test_dependency_only(self):
         # Group score lowered by dependency, but no in-group test fails.
         tests = [self._test("a", 100), self._test("b", 100)]
-        reason = utils.compute_score_lowered_reason(
-            tests, self._group(0, 100, affected=True, prereqs="1, 2")
-        )
+        reason = utils.compute_score_lowered_reason(tests, self._group(0, 100, affected=True, prereqs="1, 2"))
         self.assertEqual(
             reason,
             "Score reduced due to results in prerequisite subtask(s): 1, 2",
@@ -1178,13 +1176,10 @@ class TestComputeScoreLoweredReason(TestCase):
 
     def test_dependency_and_failing_tests_combined(self):
         tests = [self._test("a", 100), self._test("b", 50)]
-        reason = utils.compute_score_lowered_reason(
-            tests, self._group(0, 100, affected=True, prereqs="1")
-        )
+        reason = utils.compute_score_lowered_reason(tests, self._group(0, 100, affected=True, prereqs="1"))
         self.assertEqual(
             reason,
-            "Score lowered due to test b result. "
-            "Score reduced due to results in prerequisite subtask(s): 1",
+            "Score lowered due to test b result. Score reduced due to results in prerequisite subtask(s): 1",
         )
 
     def test_no_failing_tests_no_dependency_returns_none(self):
