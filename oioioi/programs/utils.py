@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
-from django.utils.translation import gettext
+from django.utils.translation import gettext as _
 
 from oioioi.base.utils import make_html_link
 from oioioi.contests.scores import IntegerScore, ScoreValue
@@ -97,14 +97,14 @@ def compute_score_lowered_reason(test_reports, group_report, max_listed=3):
         listed = failing[:max_listed]
         remaining = len(failing) - len(listed)
         if len(failing) == 1:
-            parts.append(gettext("Score lowered due to test %(name)s result.") % {"name": listed[0]})
+            parts.append(_("Score lowered due to test %(name)s result.") % {"name": listed[0]})
         elif remaining == 0:
-            parts.append(gettext("Score lowered due to tests: %(names)s.") % {"names": ", ".join(listed)})
+            parts.append(_("Score lowered due to tests: %(names)s.") % {"names": ", ".join(listed)})
         else:
-            parts.append(gettext("Score lowered due to tests: %(names)s and %(count)d more.") % {"names": ", ".join(listed), "count": remaining})
+            parts.append(_("Score lowered due to tests: %(names)s and %(count)d more.") % {"names": ", ".join(listed), "count": remaining})
 
     if group_report.score_affected_by_dependency and group_report.dependency_prereqs:
-        parts.append(gettext("Score reduced due to results in prerequisite subtask(s): %(prereqs)s") % {"prereqs": group_report.dependency_prereqs})
+        parts.append(_("Score reduced due to results in prerequisite subtask(s): %(prereqs)s") % {"prereqs": group_report.dependency_prereqs})
 
     if not parts:
         return None
@@ -224,7 +224,7 @@ def get_extension(file_name):
 
 def get_submittable_languages():
     submittable_languages = settings.SUBMITTABLE_LANGUAGES
-    for _, lang_config in submittable_languages.items():
+    for lang_config in submittable_languages.values():
         lang_config.setdefault("type", "main")
     return submittable_languages
 
