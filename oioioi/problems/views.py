@@ -507,7 +507,7 @@ def problemset_all_problems_view(request):
 
 def problem_site_view(request, site_key):
     problem = get_object_or_404(Problem, problemsite__url_key=site_key)
-    package = ProblemPackage.objects.filter(problem=problem).first()
+    package = ProblemPackage.objects.filter(problem=problem, status="OK").first()
     show_add_button, administered_recent_contests = generate_add_to_contest_metadata(request)
     extra_actions = problem.controller.get_extra_problem_site_actions(problem)
     problemset_tabs = generate_problemset_tabs(request)
@@ -1008,7 +1008,9 @@ def get_selected_origintag_hints_view(request):
 
 
 def get_nonselected_origintag_hints(query):
-    return _get_origintag_hints(OriginTagLocalization.objects.filter(full_name__icontains=query))
+    return _get_origintag_hints(
+        OriginTagLocalization.objects.filter(Q(full_name__icontains=query) | Q(short_name__icontains=query) | Q(origin_tag__name__icontains=query))
+    )
 
 
 @uniquefy("name")
@@ -1022,7 +1024,7 @@ def get_algorithm_and_difficulty_tag_hints(query):
                 "prefix": "algorithm",
                 "value": atl.algorithm_tag.name,
             }
-            for atl in AlgorithmTagLocalization.objects.filter(full_name__icontains=query)
+            for atl in AlgorithmTagLocalization.objects.filter(Q(full_name__icontains=query) | Q(algorithm_tag__name__icontains=query))
         ]
     )
     result.extend(
@@ -1034,7 +1036,7 @@ def get_algorithm_and_difficulty_tag_hints(query):
                 "prefix": "difficulty",
                 "value": dtl.difficulty_tag.name,
             }
-            for dtl in DifficultyTagLocalization.objects.filter(full_name__icontains=query)
+            for dtl in DifficultyTagLocalization.objects.filter(Q(full_name__icontains=query) | Q(difficulty_tag__name__icontains=query))
         ]
     )
 
